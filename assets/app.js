@@ -6,5 +6,9 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 import './styles/app.css';
+import { fetchGet } from './js/fetchUtils';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+// Exponer las funciones globalmente
+window.fetchGet = fetchGet;
+
+console.log('Hello Webpack Encore! Edit me in assets/app.js');
