@@ -27,4 +27,15 @@ final class HomeController extends AbstractController
 
         return $this->json($data);
     }
+
+    #[Route('/home/persons', name: 'app_home_persons')]
+    public function showPersons(): JsonResponse
+    {
+        $persons = [
+            ['name' => 'John Doe', 'age' => 30],
+            ['name' => 'Jane Smith', 'age' => 25],
+        ];
+
+        return $this->json($persons);
+    }
 }
