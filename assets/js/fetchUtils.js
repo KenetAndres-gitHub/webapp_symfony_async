@@ -34,5 +34,4 @@ async function fetchPost(url, data) {
         throw error;
     }
 }
-console.log('fetchUtils.js loaded');
 export { fetchGet, fetchPost };

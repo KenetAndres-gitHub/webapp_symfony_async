@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Persona;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,13 +31,18 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/home/persons', name: 'app_home_persons')]
-    public function showPersons(): JsonResponse
+    public function showPersons(EntityManagerInterface $em): JsonResponse
     {
-        $persons = [
-            ['name' => 'John Doe', 'age' => 30],
-            ['name' => 'Jane Smith', 'age' => 25],
-        ];
-
+        $personsDb = $em->getRepository(Persona::class)->findAll();
+        $persons = [];
+        foreach ($personsDb as $person) {
+            $persons[] = [
+                'id' => $person->getId(),
+                'name' => $person->getName(),
+                'lastName' => $person->getLastName(),
+                'dateBirth' => $person->getDateBirth()->format('d-m-Y'),
+            ];
+        }
         return $this->json($persons);
     }
 }
