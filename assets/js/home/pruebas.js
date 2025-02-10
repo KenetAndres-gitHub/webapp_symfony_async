@@ -5,6 +5,13 @@ const form = document.getElementById('personaForm');
 
 (async function() {
     await fetchPersonas();
+    const searchName = document.getElementById('searchName');
+    const searchLastName = document.getElementById('searchLastName');
+    const searchDob = document.getElementById('searchDob');
+
+    [searchName, searchLastName, searchDob].forEach((input) => {
+        input.addEventListener('input', filterAndRenderPersonas);
+    });
 })();
 
 form.addEventListener('submit', async function(event) {
@@ -18,7 +25,6 @@ form.addEventListener('submit', async function(event) {
     data.append('dateBirth', dateBirth);
 
     const response = await fetchPost('/home/persons/add', data);
-    console.log(response);
     if (response.status === 'success') {
         await fetchPersonas();
         form.reset();
@@ -53,4 +59,20 @@ function generatePersonasTable(tableElement, personas) {
         
         tableElement.appendChild(row);
     });
+}
+
+function filterAndRenderPersonas() {
+    const nameValue = (document.getElementById('searchName').value || '').toLowerCase();
+    const lastNameValue = (document.getElementById('searchLastName').value || '').toLowerCase();
+    const dateValue = (document.getElementById('searchDob').value || '').split('-').reverse().join('-'); //.plit para separar la fecha en 3 partes, reverse para invertir el orden y join para unir las partes con un guion
+    // Filtra usando todos los campos: si están vacíos no afectan el filtrado
+    const filtered = personas.filter((p) => {
+        const matchesName = p.name.toLowerCase().includes(nameValue);
+        const matchesLast = p.lastName.toLowerCase().includes(lastNameValue);
+        const matchesDate = p.dateBirth.toLowerCase().includes(dateValue) || p.dateBirth.includes(dateValue);
+        return matchesName && matchesLast && matchesDate;
+    });
+
+    const tableElement = document.getElementById('personasTableBody');
+    generatePersonasTable(tableElement, filtered);
 }
